@@ -1,0 +1,117 @@
+CREATE TABLE CLASS
+(
+  ClassName INT NOT NULL,
+  Subclass__Archetype INT NOT NULL,
+  ClassLevel INT NOT NULL,
+  ClassID INT NOT NULL,
+  PRIMARY KEY (ClassID),
+  UNIQUE (ClassName)
+);
+CREATE TABLE USERS
+(
+  Username VARCHAR NOT NULL,
+  Password VARCHAR NOT NULL,
+  DoB DATE NOT NULL,
+  UserID INT NOT NULL,
+  IsAdmin Bool NOT NULL,
+  PRIMARY KEY (UserID),
+  UNIQUE (Username)
+);
+CREATE TABLE RACE
+(
+  RaceName INT NOT NULL,
+  Subrace INT NOT NULL,
+  RaceID INT NOT NULL,
+  PRIMARY KEY (RaceID),
+  UNIQUE (RaceName)
+);
+CREATE TABLE BACKGROUND
+(
+  BackgroundName INT NOT NULL,
+  BackgroundID INT NOT NULL,
+  PRIMARY KEY (BackgroundID),
+  UNIQUE (BackgroundName)
+);
+CREATE TABLE ACTIONS
+(
+  ActionID INT NOT NULL,
+  ActionData INT NOT NULL,
+  ActionName INT NOT NULL,
+  PRIMARY KEY (ActionID)
+);
+CREATE TABLE BACKGROUND_Predefined_Items
+(
+  Predefined_Items INT NOT NULL,
+  BackgroundID INT NOT NULL,
+  PRIMARY KEY (Predefined_Items, BackgroundID),
+  FOREIGN KEY (BackgroundID) REFERENCES BACKGROUND(BackgroundID)
+);
+CREATE TABLE CHARACTERS
+(
+  FName INT NOT NULL,
+  LName INT NOT NULL,
+  Creation_Date INT NOT NULL,
+  Char_ID INT NOT NULL,
+  Proficiencies INT NOT NULL,
+  Traits INT NOT NULL,
+  Languages INT NOT NULL,
+  Hit_Points INT NOT NULL,
+  UserID INT NOT NULL,
+  RaceID INT NOT NULL,
+  BackgroundID INT NOT NULL,
+  PRIMARY KEY (Char_ID),
+  FOREIGN KEY (UserID) REFERENCES USERS(UserID),
+  FOREIGN KEY (RaceID) REFERENCES RACE(RaceID),
+  FOREIGN KEY (BackgroundID) REFERENCES BACKGROUND(BackgroundID)
+);
+CREATE TABLE SKILLS
+(
+  Acrobatics INT NOT NULL,
+  Animal_Handling INT NOT NULL,
+  Arcana INT NOT NULL,
+  Athletics INT NOT NULL,
+  Deception INT NOT NULL,
+  History INT NOT NULL,
+  Insight INT NOT NULL,
+  Intimidation INT NOT NULL,
+  Investigation INT NOT NULL,
+  Medicine INT NOT NULL,
+  Nature INT NOT NULL,
+  Perception INT NOT NULL,
+  Persuasion INT NOT NULL,
+  Religion INT NOT NULL,
+  Sleight_of_Hand INT NOT NULL,
+  Stealth INT NOT NULL,
+  Survival INT NOT NULL,
+  Char_ID INT NOT NULL,
+  PRIMARY KEY (Char_ID),
+  FOREIGN KEY (Char_ID) REFERENCES CHARACTERS(Char_ID)
+);
+CREATE TABLE ABILITY_SCORE
+(
+  Dexterity INT NOT NULL,
+  Constitution INT NOT NULL,
+  Strength INT NOT NULL,
+  Intelligence INT NOT NULL,
+  Wisdom INT NOT NULL,
+  Charisma INT NOT NULL,
+  Char_ID INT NOT NULL,
+  PRIMARY KEY (Char_ID),
+  FOREIGN KEY (Char_ID) REFERENCES CHARACTERS(Char_ID)
+);
+CREATE TABLE have
+(
+  Char_ID INT NOT NULL,
+  ActionID INT NOT NULL,
+  PRIMARY KEY (Char_ID, ActionID),
+  FOREIGN KEY (Char_ID) REFERENCES CHARACTERS(Char_ID),
+  FOREIGN KEY (ActionID) REFERENCES ACTIONS(ActionID)
+);
+CREATE TABLE has
+(
+  Char_ID INT NOT NULL,
+  ClassID INT NOT NULL,
+  PRIMARY KEY (Char_ID, ClassID),
+  FOREIGN KEY (Char_ID) REFERENCES CHARACTERS(Char_ID),
+  FOREIGN KEY (ClassID) REFERENCES CLASS(ClassID)
+);
