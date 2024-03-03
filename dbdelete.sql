@@ -1,0 +1,11 @@
+delete from "CLASS" where ClassName='rogue';
+delete from "RACE" where RaceID=2;
+delete from "USERS" where Username='burrito';
+delete from "BACKGROUND" where 1=1;
+delete from "ACTIONS" where 1=1;
+delete from "BACKGROUND_Predefined_Items" where 1=1;
+delete from "CHARACTERS" where 1=1;
+delete from "SKILL" where 1=1;
+delete from "ABILITY_SCORE" where 1=1;
+delete from "have" where 1=1;
+delete from "has" where 1=1;
