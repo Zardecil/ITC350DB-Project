@@ -5,7 +5,3 @@ delete from "BACKGROUND" where BackgroundName='hermit';
 delete from "ACTIONS" where ActionDate='Eat A Taco';
 delete from "BACKGROUND_Predefined_Items" where Predefined_Items='Tacos';
 delete from "CHARACTERS" where Fname='Burrito';
-delete from "SKILL" where 1=1;
-delete from "ABILITY_SCORE" where 1=1;
-delete from "have" where 1=1;
-delete from "has" where 1=1;
