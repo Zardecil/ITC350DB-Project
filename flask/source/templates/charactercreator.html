@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>List of Owned Items</title>
+    <link rel="stylesheet" href="static/css/styles.css">
+</head>
+<body>
+    <button type="button" onclick="window.location.replace('logout')">Logout</button>
+    <!-- Show error or success messages if there are any -->
+    {% with messages = get_flashed_messages(with_categories=true) %}
+        <!-- Check to see if there are any messages to show -->
+        {% if messages %}
+            {% for category, message in messages %}
+                <p class="alert {{ category }}">{{ message }}</p>
+            {% endfor %}
+        {% endif %}
+    {% endwith %}
+
+    <!-- Code for adding a new character -->
+    <h2>Login:</h2>
+    <form action="/charactercreate" method="post">
+        <label for="FirstName">First Name:</label>
+        <input type="text" id="FirstName" name="FirstName" required>
+        <br>
+        <label for="LastName">Last Name:</label>
+        <input type="text" id="LastName" name="LastName" required>
+        <br>
+        <input type="hidden" id="CreationDate" name="CreationDate">
+        <label for="Proficiencies">Proficiencies</label>
+        <input type="text" id="Proficiencies" name="Proficiencies" required>
+        <br>
+        <label for="Traits">Traits:</label>
+        <input type="text" id="Traits" name="Traits" required>
+        <br>
+        <label for="Languages">Languages:</label>
+        <input type="text" id="Languages" name="Languages" required>
+        <br>
+        <label for="HitPoints">HitPoints:</label>
+        <input type="number" id="HitPoints" name="HitPoints" required>
+        <br>
+        <label for="Background">Background:</label>
+        <select name="Background">
+            <option value="Acolyte">Acolyte</option>
+            <option value="Charlatan">Charlatan</option>
+            <option value="City Watch/Investigator">City Watch/Investigator</option>
+            <option value="Clan Crafter">Clan Crafter</option>
+            <option value="Cloistered Scholar">Cloistered Scholar</option>
+            <option value="Courtier">Courtier</option>
+            <option value="Criminal/Spy">Criminal/Spy</option>
+            <option value="Entertainer">Entertainer</option>
+            <option value="Faction Agent">Faction Agent</option>
+            <option value="Far Traveler">Far Traveler</option>
+            <option value="Folk Hero">Folk Hero</option>
+            <option value="Gladiator">Gladiator</option>
+            <option value="Guild Artisan/Guild Merchant">Guild Artisan/Guild Merchant</option>
+            <option value="Haunted One">Haunted One</option>
+            <option value="Hermit">Hermit</option>
+            <option value="House Agent (Cannith)">House Agent (Cannith)</option>
+            <option value="House Agent (Deneith)">House Agent (Deneith)</option>
+            <option value="House Agent (Ghallanda)">House Agent (Ghallanda)</option>
+            <option value="House Agent (Jorasco)">House Agent (Jorasco)</option>
+            <option value="House Agent (Kundarak)">House Agent (Kundarak)</option>
+            <option value="House Agent (Lyrandar)">House Agent (Lyrandar)</option>
+            <option value="House Agent (Medani)">House Agent (Medani)</option>
+            <option value="House Agent (Orien)">House Agent (Orien)</option>
+            <option value="House Agent (Phiarlan)">House Agent (Phiarlan)</option>
+            <option value="House Agent (Sivis)">House Agent (Sivis)</option>
+            <option value="House Agent (Tharashk)">House Agent (Tharashk)</option>
+            <option value="House Agent (Thuranni)">House Agent (Thuranni)</option>
+            <option value="House Agent (Vadalis)">House Agent (Vadalis)</option>
+            <option value="Inheritor">Inheritor</option>
+            <option value="Knight">Knight</option>
+            <option value="Knight of the Order">Knight of the Order</option>
+            <option value="Mercenary Veteran">Mercenary Veteran</option>
+            <option value="Noble">Noble</option>
+            <option value="Outlander">Outlander</option>
+            <option value="Pirate">Pirate</option>
+            <option value="Sage">Sage</option>
+            <option value="Sailor">Sailor</option>
+            <option value="Soldier">Soldier</option>
+            <option value="Urban Bounty Hunter">Urban Bounty Hunter</option>
+            <option value="Urchin">Urchin</option>
+            <option value="Uthgardt Tribe Member">Uthgardt Tribe Member</option>
+            <option value="Waterdhavian Noble">Waterdhavian Noble</option>
+        </select>
+        <br>
+        <label for="className">Class:</label>
+        <select name="className" id="className">
+            <option value="Artificer">Artificer</option>
+            <option value="Barbarian">Barbarian</option>
+            <option value="Bard">Bard</option>
+            <option value="Cleric">Cleric</option>
+            <option value="Druid">Druid</option>
+            <option value="Fighter">Fighter</option>
+            <option value="Monk">Monk</option>
+            <option value="Paladin">Paladin</option>
+            <option value="Ranger">Ranger</option>
+            <option value="Rogue">Rogue</option>
+            <option value="Sorcerer">Sorcerer</option>
+            <option value="Warlock">Warlock</option>
+            <option value="Wizard">Wizard</option>
+        </select>
+        <br>
+        <label for="Race">Race:</label>
+        <select name="Race" id="Race">
+            <option value="Arakocra">Arakocra</option>
+            <option value="Bugbear">Bugbear</option>
+            <option value="Changeling">Changeling</option>
+            <option value="Dragonborn">Dragonborn</option>
+            <option value="Dwarf">Dwarf</option>
+            <option value="Elf">Elf</option>
+            <option value="Genasi">Genasi</option>
+            <option value="Gnome">Gnome</option>
+            <option value="Goblin">Goblin</option>
+            <option value="Goliath">Goliath</option>
+            <option value="Half-Elf">Half-Elf</option>
+            <option value="Half-Orc">Half-Orc</option>
+            <option value="Halfling">Halfling</option>
+            <option value="Hobgoblin">Hobgoblin</option>
+            <option value="Human">Human</option>
+            <option value="Kalashtar">Kalashtar</option>
+            <option value="Shifter">Shifter</option>
+            <option value="Tiefling">Tiefling</option>
+            <option value="Warforged">Warforged</option>
+        </select>  
+        <!-- Later we'll add support for storing these
+        <br>
+        <label for="Dexterity">Dexterity:</label>
+        <input type="number" id="Dexterity" name="Dexterity" required>
+        <br>
+        <label for="Constitution">Constitution:</label>
+        <input type="number" id="Constitution" name="Constitution" required>
+        <br>
+        <label for="Strength">Strength:</label>
+        <input type="number" id="Strength" name="Strength" required>
+        <br>
+        <label for="Intelligence">Intelligence:</label>
+        <input type="number" id="Intelligence" name="Intelligence" required>
+        <br>
+        <label for="Wisdom">Wisdom:</label>
+        <input type="number" id="Wisdom" name="Wisdom" required>
+        <br>
+        <label for="Charisma">Charisma:</label>
+        <input type="number" id="Charisma" name="Charisma" required>
+        <br>-->
+        <!-- Submit Button -->
+        <input type="submit" value="Create">
+    </form>
+<script>
+    document.getElementById("CreationDate").value = new Date().toISOString().slice(0, 10);
+</script>
+</body>
+</html>

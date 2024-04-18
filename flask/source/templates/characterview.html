@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>List of Owned Items</title>
+    <link rel="stylesheet" href="static/css/styles.css">
+</head>
+<body>
+    <button type="button" onclick="window.location.replace('logout')">Logout</button>
+    <!-- Show error or success messages if there are any -->
+    {% with messages = get_flashed_messages(with_categories=true) %}
+        <!-- Check to see if there are any messages to show -->
+        {% if messages %}
+            {% for category, message in messages %}
+                <p class="alert {{ category }}">{{ message }}</p>
+            {% endfor %}
+        {% endif %}
+    {% endwith %}
+
+    <!-- Code for listing owned items -->
+    <h2>Your Characters</h2>
+    <ul>
+        <!-- This is some python jinja2 code. Only existing items will be displayed. -->
+        {% for character in characterList %}
+            <li>Name: {{ character[0] }} {{ character[1]}}, Background: {{ character[2] }}, Class: {{ character[3] }}, Race: {{ character[4] }}</li>
+        {% endfor %}
+    </ul>
+    <button type="button" onclick="window.location.replace('charactercreate')">Create New Character</button>
+</body>
+</html>
