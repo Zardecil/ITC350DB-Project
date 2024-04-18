@@ -27,18 +27,21 @@ def get_db_connection():
 
 
 # ------------------------ BEGIN ROUTES ------------------------ #
-# EXAMPLE OF GET REQUEST
+# HOME GET REQUEST
 @app.route("/", methods=["GET"])
 def home():
     return render_template("index.html") # Return the page to be rendered
 
+#LOGIN ROUTE THAT TAKES GET AND POST REQUESTS
 @app.route("/login", methods=["GET", "POST"])
 def login_page():
     if request.method == "POST":
+        #RETRIEVE FORM DATA
         login_valid = False
         data = request.form
         username = data["username"]
         password = data["password"]
+        #GET THE PASSWORD HASH FROM THE DATABASE AND CHECK IT AGAINST THE ENTERED PASSWORD TO SEE IF IT'S CORRECT
         conn=get_db_connection()
         cursor=conn.cursor()
         cursor.execute("SELECT password FROM USERS WHERE Username = %s", (username,))
@@ -47,30 +50,39 @@ def login_page():
             session["username"] = username
             flash("Login Successful!", "success")
             return redirect(url_for("characters"))
+        #IF PASSWORD IS INCORRRECT OR THERE'S NO USER REGISTERED UNDER THE NAME
         flash("Incorrect Username or Password", "error")
         return render_template("login.html")
+    #HANDLES SERVING THE PAGE
     if request.method == "GET":
         return render_template("login.html")
 
+#LOGOUT ROUTE THAT HANDLES LOGGING OUT
 @app.route("/logout", methods=["GET"])
 def log_out():
+    #REMOVE THE USERNAME FROM THE COOKIE IF IT EXISTS
     session.pop("username", None)
     return redirect(url_for("home"))
-        
+
+#REGISTRATION ROUTE
 @app.route("/register", methods=["GET", "POST"])
 def register():
     if request.method == "POST":
         data = request.form
+        #GET FORM DATA
         username=data["username"]
         password=data["password"]
         repeatPassword=data["repeatpassword"]
+        #CHECKS TO SEE IF PASSWORD AND REPEAT PASSWORD ARE THE SAME, OTHERWISE IT JUST REDIRECTS TO THE PAGE
         if password == repeatPassword:
             conn=get_db_connection()
             cursor=conn.cursor()
+            #ENFORCE UNIQUENESS OF USERNAMES
             cursor.execute("SELECT * FROM USERS WHERE Username = %s", (username,))
             if len(cursor.fetchall()) != 0:
                 flash("Username already taken.")
                 return render_template("register.html")
+            #SALT AND HASH THE PASSWORD, GENERATE USER ID BEFORE THROWING IT IN THE DATABASE
             hash=bcrypt.hashpw(password.encode("utf8"), bcrypt.gensalt()).decode("utf8")
             id = random.randint(0,9223372036854775807*2)
             cursor.execute("INSERT INTO dnd_character_creator.USERS (Username, Password, IsAdmin, userID) VALUES (%s, %s, 0, %s);", (escape(username), hash, id))
@@ -84,24 +96,28 @@ def register():
     if request.method == "GET":
         return render_template("register.html")
 
+#CHARACTER VIEW THAT SHOWS CHARACTERS, REDIRECTS IF NOT LOGGED IN.
 @app.route("/characterview", methods=["GET"])
 def characters():
     if "username" in session:
         conn=get_db_connection()
         cursor=conn.cursor()
+        #GET DATA FROM THE VIEW THAT IS RELEVANT
         stmt = cursor.execute("select * from dnd_character_creator.CHARACTERVIEW where Username = %s", (session["username"],))
         characterList = cursor.fetchall()
         return render_template("characterview.html", characterList=characterList)
     return redirect(url_for("login_page"))
 
-@app.route("/charactercreate", methods=["GET", "POST"])
+#CHARACTER CREATION ROUTE, TAKES GET AND POST, RENDERS PAGE FOR GET AND INSERTS CHARACTER INTO DB FOR POST, REDIRECTS IF NOT LOGGED IN.
+@app.route("/charactercreate", methods=["GET", "POST"]) #TODO: ADD FUNCTIONALITY FOR THE DELETE AND UPDATE FUNCTIONS
 def characterCreate():
+    if "username" not in session:
+        return redirect(url_for("login_page"))
     if request.method == "GET":
-        if "username" not in session:
-            flash("Not Logged In.", "error")
-            return redirect(url_for("login_page"))
+        flash("Not Logged In.", "error")
         return render_template("charactercreator.html")
-    if request.method == "POST" and "username" in session:
+    if request.method == "POST":
+        #GET FORM DATA(ALL OF IT)
         data = request.form
         firstname = data["FirstName"]
         lastname = data["LastName"]
@@ -113,6 +129,7 @@ def characterCreate():
         background = data["Background"]
         classname = data["className"]
         race = data["Race"]
+        #INSERT CHARACTER INTO THE DATABASE
         characterID = random.randint(0,9223372036854775807*2)
         conn=get_db_connection()
         cursor=conn.cursor()
@@ -122,13 +139,19 @@ def characterCreate():
                         (firstname, lastname,creationdate,proficiencies,traits,languages,hitpoints,userID[0][0],background,classname,race,characterID))
         conn.commit()
         conn.close()
+        #REDIRECT TO THE CHARACTER VIEW PAGE
         return redirect(url_for("characters"))
-    else:
-        flash("Not logged in", "error")
-        return redirect(url_for("login_page"))
+    if request.method == "UPDATE":
+        pass #TODO: ADD UPDATE FUNCTIONALITY
+    if request.method == "DELETE":
+        pass #TODO: ADD CHARACTER DELETION FUNCTIONALITY
+    
+
 # ------------------------ END ROUTES ------------------------ #
 
 
 # listen on port 80
 if __name__ == "__main__":
-    app.run(host="0.0.0.0", port=80, debug=False) # TODO: Students PLEASE remove debug=True when you deploy this for production!!!!!
+    app.run(host="0.0.0.0", port=80, debug=False) # WHEN TESTING BE SURE TO TURN THIS ON, WHEN ON PRODUCTION BE COMPLETELY SURE TO TURN THIS OFF
+    #IT MAY HAVE A KEY PIN FOR THE CODE EXECUTION, BUT THAT CAN BE REVERSE ENGINEERED IF THEY HAVE ANY KIND OF LOCAL FILE INCLUSION
+    #RESULTING IN REMOTE CODE EXECUTION AND THAT'S REALLY BAD FOR EVERYONE INVOLVED BUT THE HACKER
